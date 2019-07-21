@@ -46,7 +46,7 @@ class Render {
         const {key} = event
         switch(key) {
             case "ArrowRight": {
-                if(this.lastAction === 'MOVE_RIGHT') return false
+                if(this.lastAction === 'MOVE_RIGHT' || this.lastAction === 'MOVE_LEFT') return false
 
                 this.lastAction = 'MOVE_RIGHT'
                 dataKeeper.dispatch({ type: 'MOVE_RIGHT' })
@@ -54,7 +54,7 @@ class Render {
             }
 
             case "ArrowLeft": {
-                if(this.lastAction === 'MOVE_LEFT') return false
+                if(this.lastAction === 'MOVE_LEFT' || this.lastAction === 'MOVE_RIGHT') return false
 
                 this.lastAction = 'MOVE_LEFT'
                 dataKeeper.dispatch({ type: 'MOVE_LEFT' })
@@ -62,7 +62,7 @@ class Render {
             }
 
             case "ArrowUp": {
-                if(this.lastAction === 'MOVE_UP') return false
+                if(this.lastAction === 'MOVE_UP' || this.lastAction === 'MOVE_DOWN') return false
 
                 this.lastAction = 'MOVE_UP'
                 dataKeeper.dispatch({ type: 'MOVE_UP' })
@@ -70,7 +70,7 @@ class Render {
             }
 
             case "ArrowDown": {
-                if(this.lastAction === 'MOVE_DOWN') return false
+                if(this.lastAction === 'MOVE_DOWN' || this.lastAction === 'MOVE_UP' ) return false
 
                 this.lastAction = 'MOVE_DOWN'
                 dataKeeper.dispatch({ type: 'MOVE_DOWN' })
