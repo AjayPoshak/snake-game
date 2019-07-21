@@ -1,0 +1,56 @@
+* {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    box-sizing: border-box;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.snake-game {
+    width: 100%;
+    display: flex;
+    margin: 0 auto;
+    max-width: 1240px;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.snake-game .__btn {
+    border: none;
+    outline: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 15px;
+    border-radius: 4px;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    background-color: #28a745;
+}
+
+.board {
+    width: 500px;
+    height: 500px;
+    display: grid;
+    margin-top: 50px;
+    grid-template-columns: 12fr;
+    border: 1px solid #FF5A5F;
+}
+
+.row {
+    height: 100%;
+}
+
+.column {
+    height: 100%;
+    width: calc(100%/10);
+    display: inline-block;
+}
+
+.column + .__fill {
+    background-color: #000;
+}
