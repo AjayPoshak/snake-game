@@ -25,15 +25,49 @@ class DataKeeper {
         }
     }
 
-    determinePosition(positions, direction) {
-        console.log('determinePosition ', positions, direction)
-        let [xPos, yPos] = positions[0].split(':')
-        let x = parseInt(xPos, 10)
-        let y = parseInt(yPos, 10)
-        let hasCollided = false
+    /**
+     * For any given position and direction, it determines
+     * the next position of snake
+     * @param {*} direction 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    determinePosition(direction, x, y){
         switch(direction) {
             case 'MOVE_LEFT': {
                 y -= 1 // Move to Left
+                break
+            }
+
+            case 'MOVE_RIGHT': {
+                y += 1 // Move to Right
+                break
+            }
+
+            case 'MOVE_UP': {
+                x -= 1
+                break
+            }
+
+            case 'MOVE_DOWN': {
+                x += 1
+                break
+            }
+        }
+        return {x, y}
+    }
+
+    /**
+     * For any given position and direction, it detects
+     * if snake has collided to fence or not.
+     * @param {*} direction 
+     * @param {*} x 
+     * @param {*} y 
+     */
+    detectCollision(direction, x, y) {
+        let hasCollided = false
+        switch(direction) {
+            case 'MOVE_LEFT': {
                 if(y < 0) {
                     hasCollided = true
                 }
@@ -41,7 +75,6 @@ class DataKeeper {
             }
 
             case 'MOVE_RIGHT': {
-                y += 1 // Move to Right
                 if(y > this.MAX_COLUMNS-1) {
                     hasCollided = true
                 }
@@ -49,7 +82,6 @@ class DataKeeper {
             }
 
             case 'MOVE_UP': {
-                x -= 1
                 if(x < 0) {
                     hasCollided = true
                 }
@@ -57,23 +89,40 @@ class DataKeeper {
             }
 
             case 'MOVE_DOWN': {
-                x += 1
                 if(x > this.MAX_COLUMNS-1) {
                     hasCollided = true
                 }
                 break
             }
         }
+        return hasCollided
+    }
+
+    /**
+     * Moves snake around the board. For any given direction,
+     * it determines the next position on board & also
+     * detects if snake has collided to the fence.
+     * @param {*} positions 
+     * @param {*} direction 
+     */
+    moveSnake(positions, direction) {
+        let [xPos, yPos] = positions[0].split(':')
+        let x = parseInt(xPos, 10)
+        let y = parseInt(yPos, 10)
+
+        const { x: updatedX, y: updatedY } = this.determinePosition(direction, x, y)
+        const hasCollided = this.detectCollision(direction, updatedX, updatedY)
+
         // Remove last position
         positions.pop()
         // Add new position
-        positions.unshift(`${x}:${y}`)
+        positions.unshift(`${updatedX}:${updatedY}`)
         return { positions, hasCollided }
     }
 
     move(state, direction) {
         const { positions, crumb } = state
-        const { positions: newPositions, hasCollided } = this.determinePosition(positions, direction)
+        const { positions: newPositions, hasCollided } = this.moveSnake(positions, direction)
         const [x, y] = positions[0].split(':')
         // Check if snake is eating the crumb in new position
         const ifCrumbIsEaten = this.checkIfCrumbIsEaten(crumb, x, y)
@@ -82,7 +131,6 @@ class DataKeeper {
     }
 
     dispatch(dispatchedEvent) {
-        console.log('dispatchedEvent ', dispatchedEvent)
         const {type} = dispatchedEvent
         const state = {...this.state}
         switch(type) {
