@@ -1,9 +1,10 @@
 import dataKeeper from './data-keeper.js'
 class Crumb {
     constructor() {
+        this.updateUI = this.updateUI.bind(this)
         this.renderCrumb = this.renderCrumb.bind(this)
 
-        dataKeeper.subscribe(this.renderCrumb)
+        dataKeeper.subscribe(this.updateUI)
     }
 
     removePreviousCrumb() {
@@ -14,8 +15,7 @@ class Crumb {
         }
     }
 
-    renderCrumb(appState) {
-        const {crumb} = appState
+    renderCrumb(crumb) {
         this.removePreviousCrumb()
         const crumbPositionOnBoard = document.getElementById(crumb)
         if(crumbPositionOnBoard) {
@@ -23,6 +23,17 @@ class Crumb {
         }
     }
 
+    updateUI(appState) {
+        const { crumb, hasCrumbBeenEaten = false } = appState
+        // If existing crumb has been eaten, then remove it from board
+        if(hasCrumbBeenEaten) {
+            this.removePreviousCrumb()
+            dataKeeper.dispatch({ type: 'GENERATE_CRUMB' })
+        } else {
+
+            this.renderCrumb(crumb)
+        }
+    }
 }
 
 export default Crumb
