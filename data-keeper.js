@@ -19,6 +19,7 @@ class DataKeeper {
         this.state = {
             crumb: "",
             hasCollided: false,
+            hasCrumbBeenEaten: false,
             current_direction: 'MOVE_LEFT',
             positions: this.initialPositions
         }
@@ -67,13 +68,17 @@ class DataKeeper {
         positions.pop()
         // Add new position
         positions.unshift(`${x}:${y}`)
-        return {positions, hasCollided}
+        return { positions, hasCollided }
     }
 
     move(state, direction) {
-        const { positions } = state
-        const {positions: newPositions, hasCollided} = this.determinePosition(positions, direction)
-        return ({ positions: newPositions, current_direction: direction, hasCollided })
+        const { positions, crumb } = state
+        const { positions: newPositions, hasCollided } = this.determinePosition(positions, direction)
+        const [x, y] = positions[0].split(':')
+        // Check if snake is eating the crumb in new position
+        const ifCrumbIsEaten = this.checkIfCrumbIsEaten(crumb, x, y)
+        // @TODO: Increase snake's length if crumb is eaten
+        return ({ positions: newPositions, current_direction: direction, hasCollided, hasCrumbBeenEaten: ifCrumbIsEaten })
     }
 
     dispatch(dispatchedEvent) {
@@ -108,13 +113,14 @@ class DataKeeper {
    
             case 'GENERATE_CRUMB': {
                 const newState = this.generateCrumb(state)
-                this.state = {...newState}
+                // Setting hasCrumbBeenEaten to false, so that it resets state for new crumb
+                this.state = { ...newState, hasCrumbBeenEaten: false }
                 break;
             }
 
             case 'DO_NOTHING': break;
         }
-
+        console.log('updatedState ', this.state)
         this.callSubscribers(this.state)
     }
 
@@ -124,6 +130,14 @@ class DataKeeper {
         const column = Math.round((Math.random() * 100) % this.MAX_COLUMNS)
         const crumb = `${row}:${column}`
         return {...state, crumb}
+    }
+
+    checkIfCrumbIsEaten(crumb, x, y) {
+        const [xPosCrumb, yPosCrumb] = crumb.split(':')
+        if(xPosCrumb == x && yPosCrumb == y) {
+            return true
+        }
+        return false
     }
 
     subscribe(func) {
