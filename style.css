@@ -51,6 +51,6 @@ ul {
     display: inline-block;
 }
 
-.column + .__fill {
+.row .__fill {
     background-color: #000;
 }
