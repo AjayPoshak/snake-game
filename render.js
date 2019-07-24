@@ -11,6 +11,7 @@ class Render {
         if(!root) {
             throw new Error('Expected a root element')
         }
+        this.updateUI = this.updateUI.bind(this)
     }
 
     generateColumns(rowNumber) {
@@ -97,6 +98,13 @@ class Render {
         this.removeTimer && this.removeTimer()
     }
 
+    updateUI(data) {
+        const {hasCollided} = data
+        if(hasCollided === true) {
+            this.pauseGame()
+        }
+    }
+
     init() {
         this.createBoard()
         const snake = new Snake()
@@ -110,6 +118,7 @@ class Render {
         if(pause) {
             pause.addEventListener('click', this.pauseGame.bind(this))
         }
+        dataKeeper.subscribe(this.updateUI)
     }
 }
 
