@@ -15,8 +15,12 @@ class Snake {
 
     updatePosition(data) {
         console.log('updatePosition')
+        const {positions, hasCollided} = data
+        if(hasCollided) {
+            console.log('%c snake has collided', 'background: #222; color: #bada55')
+            return false
+        }
         this.removePreviousPosition()
-        const {positions, currentDirection} = data
         for(let i=0; i<positions.length; i++) {
             const element = document.getElementById(positions[i])
             element ? element.classList.add('__fill') : null
