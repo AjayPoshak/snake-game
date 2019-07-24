@@ -27,39 +27,36 @@ class DataKeeper {
         let [xPos, yPos] = positions[0].split(':')
         let x = parseInt(xPos, 10)
         let y = parseInt(yPos, 10)
+        let hasCollided = false
         switch(direction) {
             case 'MOVE_LEFT': {
-                if(y > 0) {
-                    y -= 1 // Move to Left
-                } else {
-                    // Collision
+                y -= 1 // Move to Left
+                if(y < 0) {
+                    hasCollided = true
                 }
                 break
             }
 
             case 'MOVE_RIGHT': {
-                if(y < this.MAX_COLUMNS-1) {
-                    y += 1 // Move to Right
-                } else {
-                    // Collision
+                y += 1 // Move to Right
+                if(y > this.MAX_COLUMNS-1) {
+                    hasCollided = true
                 }
                 break
             }
 
             case 'MOVE_UP': {
-                if(x > 0) {
-                    x -= 1
-                } else {
-                    // Collision
+                x -= 1
+                if(x < 0) {
+                    hasCollided = true
                 }
                 break
             }
 
             case 'MOVE_DOWN': {
-                if(x < this.MAX_COLUMNS) {
-                    x += 1
-                } else {
-                    // Collision
+                x += 1
+                if(x > this.MAX_COLUMNS-1) {
+                    hasCollided = true
                 }
                 break
             }
@@ -68,13 +65,13 @@ class DataKeeper {
         positions.pop()
         // Add new position
         positions.unshift(`${x}:${y}`)
-        return positions
+        return {positions, hasCollided}
     }
 
     move(state, direction) {
         const { positions } = state
-        const newPositions = this.determinePosition(positions, direction)
-        return ({positions: newPositions, current_direction: direction})
+        const {positions: newPositions, hasCollided} = this.determinePosition(positions, direction)
+        return ({ positions: newPositions, current_direction: direction, hasCollided })
     }
 
     dispatch(dispatchedEvent) {
