@@ -1,4 +1,5 @@
 import Snake from './snake.js'
+import Crumb from './crumb.js'
 import dataKeeper from './data-keeper.js'
 class Render {
     constructor({ root }) {
@@ -107,9 +108,18 @@ class Render {
 
     init() {
         this.createBoard()
+
+        // Initialize the instance of Snake UI Component
         const snake = new Snake()
         snake.init()
+
+        // Initialize the instance of Crumb UI Component
+        new Crumb()
+
+        // Attach keyup event listener for user input
         window.addEventListener('keyup', this.userInputHandler.bind(this))
+
+        // Attach event listeners for play and pause events
         const play = document.getElementById('play')
         if(play) {
             play.addEventListener('click', this.playGame.bind(this))
@@ -118,6 +128,11 @@ class Render {
         if(pause) {
             pause.addEventListener('click', this.pauseGame.bind(this))
         }
+
+        // Generate the crumb
+        dataKeeper.dispatch({type: 'GENERATE_CRUMB'})
+
+        // Subscribe the state updates from data-keeper instance
         dataKeeper.subscribe(this.updateUI)
     }
 }
