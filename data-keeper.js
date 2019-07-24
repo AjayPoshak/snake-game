@@ -17,6 +17,8 @@ class DataKeeper {
         this.positions = []
         this.listeners = []
         this.state = {
+            crumb: "",
+            hasCollided: false,
             current_direction: 'MOVE_LEFT',
             positions: this.initialPositions
         }
@@ -81,34 +83,47 @@ class DataKeeper {
         switch(type) {
             case 'MOVE_LEFT': {
                 const newState = this.move(state, type)
-                this.state = {...newState}
+                this.state = {...state, ...newState}
                 break;
             }
 
             case 'MOVE_RIGHT': {
 
                 const newState = this.move(state, type)
-                this.state = {...newState}
+                this.state = {...state ,...newState}
                 break;
             }
 
             case 'MOVE_UP': {
                 const newState = this.move(state, type)
-                this.state = {...newState}
+                this.state = {...state ,...newState}
                 break;
             }
 
             case 'MOVE_DOWN':  {
                 const newState = this.move(state, type)
-                this.state = {...newState}
+                this.state = {...state ,...newState}
                 break;
             }
    
+            case 'GENERATE_CRUMB': {
+                const newState = this.generateCrumb(state)
+                this.state = {...newState}
+                break;
+            }
+
             case 'DO_NOTHING': break;
         }
 
-        console.log('updated state ', this.state)
         this.callSubscribers(this.state)
+    }
+
+    generateCrumb(state) {
+        // @TODO: Add logic to check if generated crumb is on snake's skin
+        const row = Math.round((Math.random() * 100) % this.MAX_ROWS)
+        const column = Math.round((Math.random() * 100) % this.MAX_COLUMNS)
+        const crumb = `${row}:${column}`
+        return {...state, crumb}
     }
 
     subscribe(func) {
@@ -116,7 +131,6 @@ class DataKeeper {
     }
 
     callSubscribers(data) {
-        console.log(this.listeners)
         this.listeners.map(listener => listener(data))
     }
 
