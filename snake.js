@@ -14,7 +14,6 @@ class Snake {
   }
 
   updatePosition(data) {
-    console.log('updatePosition')
     const { positions, hasCollided } = data
     if (hasCollided) {
       console.log('%c snake has collided', 'background: #222; color: #bada55')
