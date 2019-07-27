@@ -5,7 +5,6 @@
 class DataKeeper {
   static instance
   constructor() {
-    // console.log('this.instance ',this.instance)
     if (typeof instance !== 'undefined') {
       return instance
     }
@@ -105,7 +104,7 @@ class DataKeeper {
    * @param {*} positions
    * @param {*} direction
    */
-  moveSnake(positions, direction) {
+  moveSnake(crumb, positions, direction) {
     let [xPos, yPos] = positions[0].split(':')
     let x = parseInt(xPos, 10)
     let y = parseInt(yPos, 10)
@@ -113,28 +112,37 @@ class DataKeeper {
     const { x: updatedX, y: updatedY } = this.determinePosition(direction, x, y)
     const hasCollided = this.detectCollision(direction, updatedX, updatedY)
 
-    // Remove last position
-    positions.pop()
+    // Check if snake is eating the crumb in new position
+    const ifCrumbIsEaten = this.checkIfCrumbIsEaten(crumb, updatedX, updatedY)
+    // @TODO: Increase snake's length if crumb is eaten
+
+    /**
+     * Remove last position if snake is just moving around.
+     * In case he has eaten the crumb, then do not remove
+     * the tail from snake because now its length has been
+     * increased.
+     */
+    if (ifCrumbIsEaten === false) {
+      positions.pop()
+    }
     // Add new position
     positions.unshift(`${updatedX}:${updatedY}`)
-    return { positions, hasCollided }
+    return { positions, hasCollided, hasCrumbBeenEaten: ifCrumbIsEaten }
   }
 
   move(state, direction) {
     const { positions, crumb } = state
-    const { positions: newPositions, hasCollided } = this.moveSnake(
-      positions,
-      direction
-    )
-    const [x, y] = positions[0].split(':')
-    // Check if snake is eating the crumb in new position
-    const ifCrumbIsEaten = this.checkIfCrumbIsEaten(crumb, x, y)
-    // @TODO: Increase snake's length if crumb is eaten
+    const {
+      positions: newPositions,
+      hasCollided,
+      hasCrumbBeenEaten,
+    } = this.moveSnake(crumb, positions, direction)
+
     return {
+      hasCollided,
+      hasCrumbBeenEaten,
       positions: newPositions,
       current_direction: direction,
-      hasCollided,
-      hasCrumbBeenEaten: ifCrumbIsEaten,
     }
   }
 
@@ -181,8 +189,8 @@ class DataKeeper {
 
   generateCrumb(state) {
     // @TODO: Add logic to check if generated crumb is on snake's skin
-    const row = Math.round((Math.random() * 100) % this.MAX_ROWS)
-    const column = Math.round((Math.random() * 100) % this.MAX_COLUMNS)
+    const row = Math.round(((Math.random() * 100) % this.MAX_ROWS) - 1)
+    const column = Math.round(((Math.random() * 100) % this.MAX_COLUMNS) - 1)
     const crumb = `${row}:${column}`
     return { ...state, crumb }
   }
