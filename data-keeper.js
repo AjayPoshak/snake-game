@@ -179,11 +179,20 @@ class DataKeeper {
     this.callSubscribers(this.state)
   }
 
-  generateCrumb(state) {
-    // @TODO: Add logic to check if generated crumb is on snake's skin
-    const row = Math.round((Math.random() * 100) % this.MAX_ROWS)
-    const column = Math.round((Math.random() * 100) % this.MAX_COLUMNS)
+  generateCrumbCoords() {
+    const row = Math.round((Math.random() * 100) % (this.MAX_ROWS - 1))
+    const column = Math.round((Math.random() * 100) % (this.MAX_COLUMNS - 1))
     const crumb = `${row}:${column}`
+    return crumb
+  }
+
+  generateCrumb(state) {
+    let crumb = this.generateCrumbCoords()
+    // Keep generating crumb until the generated crumb is not on snake
+    // Fun fact: A snake cannot eat crumb which is placed on its skin 😉
+    while (this.positions.includes(crumb) === true) {
+      crumb = this.generateCrumbCoords()
+    }
     return { ...state, crumb }
   }
 
