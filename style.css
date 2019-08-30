@@ -59,6 +59,11 @@ ul {
   background-color: #000;
 }
 
+/* .row [data-body-part='0'] {
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+} */
+
 .row .__crumb {
   border-radius: 50%;
   background-color: var(--primary-color);

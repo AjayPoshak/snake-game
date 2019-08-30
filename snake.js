@@ -2,14 +2,18 @@ import dataKeeper from './data-keeper.js'
 
 class Snake {
   constructor() {
+    this.fillClassName = '__fill'
+    this.snakeBodyAttribute = 'data-body-part'
     this.updatePosition = this.updatePosition.bind(this)
+    this.removePreviousPosition = this.removePreviousPosition.bind(this)
   }
 
   removePreviousPosition() {
-    const alreadyFills = document.getElementsByClassName('__fill')
+    const alreadyFills = document.getElementsByClassName(this.fillClassName)
     const fillsList = Array.from(alreadyFills)
     fillsList.map(element => {
-      element ? element.classList.remove('__fill') : null
+      element ? element.classList.remove(this.fillClassName) : null
+      element ? element.removeAttribute(this.snakeBodyAttribute) : null
     })
   }
 
@@ -22,7 +26,8 @@ class Snake {
     this.removePreviousPosition()
     for (let i = 0; i < positions.length; i++) {
       const element = document.getElementById(positions[i])
-      element ? element.classList.add('__fill') : null
+      element ? element.classList.add(this.fillClassName) : null
+      element ? element.setAttribute(this.snakeBodyAttribute, i) : null
     }
   }
 
