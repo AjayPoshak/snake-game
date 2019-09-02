@@ -91,7 +91,6 @@ class Render {
   }
 
   updateUIAfterInterval() {
-    console.log('calling updateUIAfterInterval ', this.lastAction)
     dataKeeper.dispatch({ type: this.lastAction })
   }
 
