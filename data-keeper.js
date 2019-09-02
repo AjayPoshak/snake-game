@@ -13,7 +13,6 @@ class DataKeeper {
     this.MAX_ROWS = 10
     // Express snake position as cell number
     this.initialPositions = ['0:7', '0:8', '0:9']
-    this.positions = []
     this.listeners = []
     this.state = {
       crumb: '',
@@ -194,11 +193,12 @@ class DataKeeper {
     return crumb
   }
 
-  generateCrumb(state) {
+  generateCrumb = (state) => {
+    const {positions} = state
     let crumb = this.generateCrumbCoords()
     // Keep generating crumb until the generated crumb is not on snake
     // Fun fact: A snake cannot eat crumb which is placed on its skin 😉
-    while (this.positions.includes(crumb) === true) {
+    while (positions.includes(crumb) === true) {
       crumb = this.generateCrumbCoords()
     }
     return { ...state, crumb }
