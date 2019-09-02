@@ -2,7 +2,10 @@ import dataKeeper from './data-keeper.js'
 
 class Snake {
   constructor() {
+    this.fillClassName = '__fill'
+    this.snakeBodyAttribute = 'data-body-part'
     this.updatePosition = this.updatePosition.bind(this)
+    this.removePreviousPosition = this.removePreviousPosition.bind(this)
   }
 
   destroyEye(element) {
@@ -16,7 +19,7 @@ class Snake {
   }
  
   removePreviousPosition() {
-    const alreadyFills = document.getElementsByClassName('__fill')
+    const alreadyFills = document.getElementsByClassName(this.fillClassName)
     const fillsList = Array.from(alreadyFills)
     fillsList.map(element => {
       this.destroyEye(element)

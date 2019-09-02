@@ -5,7 +5,6 @@
 class DataKeeper {
   static instance
   constructor() {
-    // console.log('this.instance ',this.instance)
     if (typeof instance !== 'undefined') {
       return instance
     }
@@ -14,7 +13,6 @@ class DataKeeper {
     this.MAX_ROWS = 10
     // Express snake position as cell number
     this.initialPositions = ['0:7', '0:8', '0:9']
-    this.positions = []
     this.listeners = []
     this.state = {
       crumb: '',
@@ -105,7 +103,7 @@ class DataKeeper {
    * @param {*} positions
    * @param {*} direction
    */
-  moveSnake(positions, direction) {
+  moveSnake(crumb, positions, direction) {
     let [xPos, yPos] = positions[0].split(':')
     let x = parseInt(xPos, 10)
     let y = parseInt(yPos, 10)
@@ -113,28 +111,37 @@ class DataKeeper {
     const { x: updatedX, y: updatedY } = this.determinePosition(direction, x, y)
     const hasCollided = this.detectCollision(direction, updatedX, updatedY)
 
-    // Remove last position
-    positions.pop()
+    // Check if snake is eating the crumb in new position
+    const ifCrumbIsEaten = this.checkIfCrumbIsEaten(crumb, updatedX, updatedY)
+    // @TODO: Increase snake's length if crumb is eaten
+
+    /**
+     * Remove last position if snake is just moving around.
+     * In case he has eaten the crumb, then do not remove
+     * the tail from snake because now its length has been
+     * increased.
+     */
+    if (ifCrumbIsEaten === false) {
+      positions.pop()
+    }
     // Add new position
     positions.unshift(`${updatedX}:${updatedY}`)
-    return { positions, hasCollided }
+    return { positions, hasCollided, hasCrumbBeenEaten: ifCrumbIsEaten }
   }
 
   move(state, direction) {
     const { positions, crumb } = state
-    const { positions: newPositions, hasCollided } = this.moveSnake(
-      positions,
-      direction
-    )
-    const [x, y] = positions[0].split(':')
-    // Check if snake is eating the crumb in new position
-    const ifCrumbIsEaten = this.checkIfCrumbIsEaten(crumb, x, y)
-    // @TODO: Increase snake's length if crumb is eaten
+    const {
+      positions: newPositions,
+      hasCollided,
+      hasCrumbBeenEaten,
+    } = this.moveSnake(crumb, positions, direction)
+
     return {
+      hasCollided,
+      hasCrumbBeenEaten,
       positions: newPositions,
       current_direction: direction,
-      hasCollided,
-      hasCrumbBeenEaten: ifCrumbIsEaten,
     }
   }
 
@@ -186,11 +193,12 @@ class DataKeeper {
     return crumb
   }
 
-  generateCrumb(state) {
+  generateCrumb = (state) => {
+    const {positions} = state
     let crumb = this.generateCrumbCoords()
     // Keep generating crumb until the generated crumb is not on snake
     // Fun fact: A snake cannot eat crumb which is placed on its skin 😉
-    while (this.positions.includes(crumb) === true) {
+    while (positions.includes(crumb) === true) {
       crumb = this.generateCrumbCoords()
     }
     return { ...state, crumb }
