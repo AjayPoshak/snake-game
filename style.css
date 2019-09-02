@@ -1,5 +1,6 @@
 :root {
   --primary-color: #ff5a5f;
+  --snake-eye-color: #ffffff;
 }
 
 * {
@@ -56,13 +57,67 @@ ul {
 }
 
 .row .__fill {
+  position: relative;
   background-color: #000;
 }
 
-/* .row [data-body-part='0'] {
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
-} */
+.row .__fill[data-snake-index="0 MOVE_LEFT"] {
+  clip-path: ellipse(98px 51px at 96px 45px);
+}
+
+.row .__fill[data-snake-index="0 MOVE_DOWN"] {
+  transform: rotate(180deg);
+  clip-path: ellipse(98px 51px at 96px 45px);
+}
+
+.row .__fill[data-snake-index="0 MOVE_RIGHT"] {
+  transform: rotate(90deg);
+  clip-path: ellipse(98px 51px at 96px 45px);
+}
+
+.row .__fill[data-snake-index="0 MOVE_UP"] {
+  clip-path: ellipse(98px 51px at 96px 45px);
+}
+
+.row .__fill[data-snake-index="0 MOVE_LEFT"] .eye {
+  right: 0;
+  top: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: absolute;
+  background-color: var(--snake-eye-color);
+}
+
+.row .__fill[data-snake-index="0 MOVE_DOWN"] .eye {
+  left: 5px;
+  top: 35px;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  position: absolute;
+  background-color: var(--snake-eye-color);
+}
+
+.row .__fill[data-snake-index="0 MOVE_RIGHT"] .eye {
+  left: 5px;
+  top: 35px;
+  height: 10px;
+  width: 10px;
+  border-radius: 50%;
+  position: absolute;
+  background-color: var(--snake-eye-color);
+}
+
+.row .__fill[data-snake-index="0 MOVE_UP"] .eye {
+  top: 30px;
+  left: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  position: absolute;
+  background-color: var(--snake-eye-color);
+}
 
 .row .__crumb {
   border-radius: 50%;
